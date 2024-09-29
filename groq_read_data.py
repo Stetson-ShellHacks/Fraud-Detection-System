@@ -20,6 +20,6 @@ def query_data(query):
     return response
 
 
-query = "We have a fraud case. Please find the details of the transaction where the fraud was detected. Give the average fraud probability for the transactions where the fraud was detected."
+query = "Write me a promt for a machine learning model to detect fraud in transactions based on the dataset"
 response = query_data(query)
 print(response)
