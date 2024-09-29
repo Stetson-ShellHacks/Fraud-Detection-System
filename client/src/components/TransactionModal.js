@@ -1,25 +1,100 @@
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Chip, useTheme, useMediaQuery, Avatar, Divider } from '@mui/material'
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import FingerprintIcon from '@mui/icons-material/Fingerprint'
+import SecurityIcon from '@mui/icons-material/Security'
+
+const isFraudulent = (amount) => amount > 10000
+
+const DetailItem = ({ icon, label, value }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+    <Avatar sx={{ bgcolor: 'primary.light', mr: 2 }}>
+      {icon}
+    </Avatar>
+    <Box>
+      <Typography variant="body2" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography variant="body1">
+        {value}
+      </Typography>
+    </Box>
+  </Box>
+)
+
 export default function TransactionModal({ isOpen, onClose, transaction }) {
-  if (!isOpen) return null
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-        <h3 className="text-xl font-bold mb-4 text-gray-800">Transaction Details</h3>
+    <Dialog 
+      open={isOpen} 
+      onClose={onClose}
+      fullScreen={isMobile}
+      PaperProps={{
+        sx: {
+          borderRadius: 2,
+          maxWidth: isMobile ? '100%' : '600px', // Increased from 400px to 600px
+          width: '100%'
+        }
+      }}
+    >
+      <DialogTitle sx={{ 
+        fontWeight: 500, 
+        bgcolor: transaction && isFraudulent(transaction.amount) ? 'error.light' : 'success.light',
+        color: transaction && isFraudulent(transaction.amount) ? 'error.dark' : 'success.dark'
+      }}>
+        Transaction Details
+      </DialogTitle>
+      <DialogContent>
         {transaction && (
-          <div className="space-y-2">
-            <p><span className="font-semibold">ID:</span> {transaction.id}</p>
-            <p><span className="font-semibold">Bank:</span> {transaction.bank}</p>
-            <p><span className="font-semibold">Amount:</span> ${transaction.amount}</p>
-            <p><span className="font-semibold">Date:</span> {transaction.date}</p>
-          </div>
+          <Box sx={{ mt: 2 }}>
+            <DetailItem 
+              icon={<AccountBalanceIcon />} 
+              label="Bank" 
+              value={transaction.bank} 
+            />
+            <DetailItem 
+              icon={<AttachMoneyIcon />} 
+              label="Amount" 
+              value={`$${transaction.amount}`} 
+            />
+            <DetailItem 
+              icon={<CalendarTodayIcon />} 
+              label="Date" 
+              value={transaction.date} 
+            />
+            <DetailItem 
+              icon={<FingerprintIcon />} 
+              label="Transaction ID" 
+              value={transaction.id} 
+            />
+            <Divider sx={{ my: 2 }} />
+            <DetailItem 
+              icon={<SecurityIcon />} 
+              label="Status" 
+              value={
+                isFraudulent(transaction.amount) ? (
+                  <Chip size="small" label="Suspicious" color="error" />
+                ) : (
+                  <Chip size="small" label="Normal" color="success" />
+                )
+              } 
+            />
+            {isFraudulent(transaction.amount) && (
+              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                This transaction has been flagged as potentially fraudulent due to its high amount. Please review and verify.
+              </Typography>
+            )}
+          </Box>
         )}
-        <button
-          onClick={onClose}
-          className="mt-6 w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-        >
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary">
           Close
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }

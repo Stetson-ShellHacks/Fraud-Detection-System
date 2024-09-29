@@ -1,0 +1,1 @@
+// export type IsFraudulentFunction = (amount: number) => boolean;

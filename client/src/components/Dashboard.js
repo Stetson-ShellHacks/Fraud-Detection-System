@@ -1,13 +1,9 @@
-"use client"
-
 import { useState } from 'react'
-import { 
-  Typography, Grid, Dialog, DialogTitle, DialogContent, DialogActions,
-  Box, Button, useTheme, useMediaQuery
-} from '@mui/material'
+import { Typography, Grid, Box } from '@mui/material'
+import TransactionTable from './TransactionTable'
 import FrequencyChart from './FrequencyChart'
 import AmountChart from './AmountChart'
-import TransactionTable from './TransactionTable'
+import TransactionModal from './TransactionModal'
 
 const transactionData = [
   { id: 1, bank: 'Bank A', amount: 1000, date: '2024-09-28' },
@@ -17,7 +13,7 @@ const transactionData = [
   { id: 5, bank: 'Bank B', amount: 3000, date: '2024-09-26' },
   { id: 6, bank: 'Bank C', amount: 750, date: '2024-09-26' },
   { id: 7, bank: 'Bank A', amount: 1200, date: '2024-09-25' },
-  { id: 8, bank: 'Bank B', amount: 2200, date: '2024-09-25' },
+  { id: 8, bank: 'Bank B', amount: 12000, date: '2024-09-25' },
 ]
 
 const frequencyData = [
@@ -43,8 +39,6 @@ const amountData = [
 export default function Dashboard() {
   const [selectedTransaction, setSelectedTransaction] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const handleSelectTransaction = (transaction) => {
     setSelectedTransaction(transaction)
@@ -68,28 +62,11 @@ export default function Dashboard() {
           <AmountChart data={amountData} />
         </Grid>
       </Grid>
-      <Dialog 
-        open={isModalOpen} 
+      <TransactionModal
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        fullScreen={isMobile}
-      >
-        <DialogTitle sx={{ fontWeight: 500 }}>Transaction Details</DialogTitle>
-        <DialogContent>
-          {selectedTransaction && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body1" paragraph><strong>Bank:</strong> {selectedTransaction.bank}</Typography>
-              <Typography variant="body1" paragraph><strong>Amount:</strong> ${selectedTransaction.amount}</Typography>
-              <Typography variant="body1" paragraph><strong>Date:</strong> {selectedTransaction.date}</Typography>
-              <Typography variant="body1" paragraph><strong>Transaction ID:</strong> {selectedTransaction.id}</Typography>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsModalOpen(false)} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+        transaction={selectedTransaction}
+      />
     </Box>
   )
 }
