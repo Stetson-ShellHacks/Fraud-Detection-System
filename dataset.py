@@ -70,5 +70,3 @@ def generate_random_dataset(file_name):
 
 # Generate three random datasets with different file names
 generate_random_dataset('transactions_dataset_1.csv')
-generate_random_dataset('transactions_dataset_2.csv')
-generate_random_dataset('transactions_dataset_3.csv')
