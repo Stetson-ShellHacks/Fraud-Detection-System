@@ -43,7 +43,7 @@ This project was created as part of ShellHacks 2024, one of Florida's largest ha
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/fraud-detection-dashboard.git
+   git clone https://github.com/Stetson-ShellHacks/Fraud-Detection-System.git
    cd fraud-detection-dashboard
    ```
 
