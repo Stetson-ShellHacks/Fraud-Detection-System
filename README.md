@@ -92,7 +92,7 @@ This project was created as part of ShellHacks 2024, one of Florida's largest ha
 
 ---
 
-Made with ❤️ by the Fraud Busters Team:
+Made with ❤️ by our team:
 - [Meirzhan Saparov](https://github.com/Meirzhan05)
 - [Temirlan Stamakunov](https://github.com/stamakunov7)
 - [Arnold Shakirov](https://github.com/arnold-shakirov)
