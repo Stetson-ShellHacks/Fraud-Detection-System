@@ -22,16 +22,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const isFraudulent = (amount) => amount > 10000;
+const isFraudulent = (transaction) => transaction.prediction === 1;
 
 export default function TransactionTable({ transactions, onSelectTransaction }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredTransactions = useMemo(() => 
     transactions.filter(transaction =>
-      transaction.bank.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.amount.toString().includes(searchTerm) ||
-      transaction.date.includes(searchTerm)
+      (transaction.bank && transaction.bank.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (transaction.amount && transaction.amount.toString().includes(searchTerm)) ||
+      (transaction.date && transaction.date.includes(searchTerm))
     ),
     [transactions, searchTerm]
   );

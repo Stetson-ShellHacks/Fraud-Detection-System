@@ -1,70 +1,85 @@
-import { useState } from 'react'
-import { Typography, Grid, Box } from '@mui/material'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Box, Grid, Typography, Card, CardContent } from '@mui/material'
 import TransactionTable from './TransactionTable'
-import FrequencyChart from './FrequencyChart'
-import AmountChart from './AmountChart'
 import TransactionModal from './TransactionModal'
-
-const transactionData = [
-  { id: 1, bank: 'Bank A', amount: 1000, date: '2024-09-28' },
-  { id: 2, bank: 'Bank B', amount: 1500, date: '2024-09-28' },
-  { id: 3, bank: 'Bank C', amount: 2000, date: '2024-09-27' },
-  { id: 4, bank: 'Bank A', amount: 500, date: '2024-09-27' },
-  { id: 5, bank: 'Bank B', amount: 3000, date: '2024-09-26' },
-  { id: 6, bank: 'Bank C', amount: 750, date: '2024-09-26' },
-  { id: 7, bank: 'Bank A', amount: 1200, date: '2024-09-25' },
-  { id: 8, bank: 'Bank B', amount: 12000, date: '2024-09-25' },
-]
-
-const frequencyData = [
-  { name: 'Mon', value: 4 },
-  { name: 'Tue', value: 3 },
-  { name: 'Wed', value: 6 },
-  { name: 'Thu', value: 8 },
-  { name: 'Fri', value: 5 },
-  { name: 'Sat', value: 2 },
-  { name: 'Sun', value: 1 },
-]
-
-const amountData = [
-  { name: 'Mon', value: 5000 },
-  { name: 'Tue', value: 3000 },
-  { name: 'Wed', value: 7000 },
-  { name: 'Thu', value: 9000 },
-  { name: 'Fri', value: 6000 },
-  { name: 'Sat', value: 2000 },
-  { name: 'Sun', value: 1000 },
-]
-
+import AmountChart from './AmountChart'
+import FrequencyChart from './FrequencyChart'
+import UploadCSV from './UploadCSV'
 export default function Dashboard() {
+  const [transactions, setTransactions] = useState([])
   const [selectedTransaction, setSelectedTransaction] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [amountChartData, setAmountChartData] = useState([])
+  const [frequencyChartData, setFrequencyChartData] = useState([])
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('transactionData') || '[]');
+    setTransactions(data);
+    processChartData(data);
+  }, []);
+
+  const handlePredictionsReceived = (data) => {
+    setTransactions(data)
+    processChartData(data)
+  }
+
+  const processChartData = (data) => {
+    // Process amount chart data
+    const amountData = data.reduce((acc, transaction) => {
+      if (transaction && typeof transaction.amount === 'number') {
+        const range = Math.floor(transaction.amount / 50000) * 50000
+        const key = `${range}-${range + 50000}`
+        acc[key] = (acc[key] || 0) + 1
+      }
+      return acc
+    }, {})
+    setAmountChartData(Object.entries(amountData).map(([name, value]) => ({ name, value })))
+
+    // Process frequency chart data
+    const frequencyData = data.reduce((acc, transaction) => {
+      if (transaction && transaction.date) {
+        const date = transaction.date.split(' ')[0]
+        acc[date] = (acc[date] || 0) + 1
+      }
+      return acc
+    }, {})
+    setFrequencyChartData(Object.entries(frequencyData).map(([name, value]) => ({ name, value })))
+  }
 
   const handleSelectTransaction = (transaction) => {
     setSelectedTransaction(transaction)
-    setIsModalOpen(true)
   }
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 300, color: '#333', mb: 4 }}>
-        Fraud Detection Dashboard
-      </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <TransactionTable 
-            transactions={transactionData} 
-            onSelectTransaction={handleSelectTransaction} 
-          />
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>Fraud Detection Dashboard</Typography>
+      {transactions.length > 0 ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <AmountChart data={amountChartData} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FrequencyChart data={frequencyChartData} />
+          </Grid>
+          <Grid item xs={12}>
+            <Card elevation={0} sx={{ borderRadius: 2 }}>
+              <CardContent>
+                <TransactionTable 
+                  transactions={transactions} 
+                  onSelectTransaction={handleSelectTransaction}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <FrequencyChart data={frequencyData} />
-          <AmountChart data={amountData} />
-        </Grid>
-      </Grid>
-      <TransactionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+      ) : (
+        <UploadCSV onPredictionsReceived={handlePredictionsReceived} />
+
+      )}
+      <TransactionModal 
+        isOpen={!!selectedTransaction} 
+        onClose={() => setSelectedTransaction(null)} 
         transaction={selectedTransaction}
       />
     </Box>
