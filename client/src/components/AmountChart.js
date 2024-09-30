@@ -6,7 +6,7 @@ export default function AmountChart({ data }) {
     <Card elevation={0} sx={{ borderRadius: 2 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, color: '#555' }}>
-          Amount Analysis
+          Transaction Amount Distribution
         </Typography>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={data}>

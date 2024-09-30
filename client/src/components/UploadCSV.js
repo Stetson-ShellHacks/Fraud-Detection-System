@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Paper, Button } from '@mui/material';
+import { Typography, Paper, Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-export default function FileUpload() {
+export default function UploadCSV() {
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
@@ -25,16 +25,11 @@ export default function FileUpload() {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       const data = await response.json();
-      // Store the data in localStorage or state management solution
       localStorage.setItem('transactionData', JSON.stringify(data));
-      
-      // Navigate to the dashboard
       navigate('/dashboard');
     } catch (error) {
       console.error('Error:', error);

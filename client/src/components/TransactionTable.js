@@ -22,22 +22,21 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const isFraudulent = (transaction) => transaction.prediction === 1;
-
 export default function TransactionTable({ transactions, onSelectTransaction }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredTransactions = useMemo(() => 
     transactions.filter(transaction =>
-      (transaction.bank && transaction.bank.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (transaction.amount && transaction.amount.toString().includes(searchTerm)) ||
-      (transaction.date && transaction.date.includes(searchTerm))
+      transaction.nameOrig.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.nameDest.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.amount.toString().includes(searchTerm) ||
+      transaction.type.toLowerCase().includes(searchTerm.toLowerCase())
     ),
     [transactions, searchTerm]
   );
 
   const fraudCount = useMemo(() => 
-    filteredTransactions.filter(t => isFraudulent(t.amount)).length,
+    filteredTransactions.filter(t => t.prediction === 1).length,
     [filteredTransactions]
   );
 
@@ -46,7 +45,7 @@ export default function TransactionTable({ transactions, onSelectTransaction }) 
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 500, color: '#555' }}>
-            Bank Transactions
+            Transactions
           </Typography>
           <Chip 
             icon={<WarningIcon />} 
@@ -66,12 +65,13 @@ export default function TransactionTable({ transactions, onSelectTransaction }) 
           />
         </Box>
         <TableContainer component={Paper} elevation={0} sx={{ maxHeight: 400, overflow: 'auto', borderRadius: 2 }}>
-          <Table stickyHeader aria-label="bank transactions table">
+          <Table stickyHeader aria-label="transactions table">
             <TableHead>
               <TableRow>
-                <StyledTableCell>Bank</StyledTableCell>
+                <StyledTableCell>Type</StyledTableCell>
                 <StyledTableCell>Amount</StyledTableCell>
-                <StyledTableCell>Date</StyledTableCell>
+                <StyledTableCell>From</StyledTableCell>
+                <StyledTableCell>To</StyledTableCell>
                 <StyledTableCell>Status</StyledTableCell>
                 <StyledTableCell>Action</StyledTableCell>
               </TableRow>
@@ -80,13 +80,14 @@ export default function TransactionTable({ transactions, onSelectTransaction }) 
               {filteredTransactions.map((transaction) => (
                 <StyledTableRow 
                   key={transaction.id}
-                  sx={isFraudulent(transaction.amount) ? { backgroundColor: 'error.light' } : {}}
+                  sx={transaction.prediction === 1 ? { backgroundColor: 'error.light' } : {}}
                 >
-                  <StyledTableCell>{transaction.bank}</StyledTableCell>
-                  <StyledTableCell>${transaction.amount}</StyledTableCell>
-                  <StyledTableCell>{transaction.date}</StyledTableCell>
+                  <StyledTableCell>{transaction.type}</StyledTableCell>
+                  <StyledTableCell>${transaction.amount.toFixed(2)}</StyledTableCell>
+                  <StyledTableCell>{transaction.nameOrig}</StyledTableCell>
+                  <StyledTableCell>{transaction.nameDest}</StyledTableCell>
                   <StyledTableCell>
-                    {isFraudulent(transaction.amount) ? (
+                    {transaction.prediction === 1 ? (
                       <Chip size="small" label="Suspicious" color="error" />
                     ) : (
                       <Chip size="small" label="Normal" color="success" />

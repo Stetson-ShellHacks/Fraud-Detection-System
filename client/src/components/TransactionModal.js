@@ -5,8 +5,6 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import FingerprintIcon from '@mui/icons-material/Fingerprint'
 import SecurityIcon from '@mui/icons-material/Security'
 
-const isFraudulent = (amount) => amount > 10000
-
 const DetailItem = ({ icon, label, value }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
     <Avatar sx={{ bgcolor: 'primary.light', mr: 2 }}>
@@ -35,15 +33,15 @@ export default function TransactionModal({ isOpen, onClose, transaction }) {
       PaperProps={{
         sx: {
           borderRadius: 2,
-          maxWidth: isMobile ? '100%' : '600px', // Increased from 400px to 600px
+          maxWidth: isMobile ? '100%' : '600px',
           width: '100%'
         }
       }}
     >
       <DialogTitle sx={{ 
         fontWeight: 500, 
-        bgcolor: transaction && isFraudulent(transaction.amount) ? 'error.light' : 'success.light',
-        color: transaction && isFraudulent(transaction.amount) ? 'error.dark' : 'success.dark'
+        bgcolor: transaction && transaction.prediction === 1 ? 'error.light' : 'success.light',
+        color: transaction && transaction.prediction === 1 ? 'error.dark' : 'success.dark'
       }}>
         Transaction Details
       </DialogTitle>
@@ -52,41 +50,44 @@ export default function TransactionModal({ isOpen, onClose, transaction }) {
           <Box sx={{ mt: 2 }}>
             <DetailItem 
               icon={<AccountBalanceIcon />} 
-              label="Bank" 
-              value={transaction.bank} 
+              label="Type" 
+              value={transaction.type} 
             />
             <DetailItem 
               icon={<AttachMoneyIcon />} 
               label="Amount" 
-              value={`$${transaction.amount}`} 
+              value={`$${transaction.amount.toFixed(2)}`} 
             />
             <DetailItem 
               icon={<CalendarTodayIcon />} 
-              label="Date" 
-              value={transaction.date} 
+              label="Step" 
+              value={transaction.step} 
             />
             <DetailItem 
               icon={<FingerprintIcon />} 
-              label="Transaction ID" 
-              value={transaction.id} 
+              label="From" 
+              value={transaction.nameOrig} 
+            />
+            <DetailItem 
+              icon={<FingerprintIcon />} 
+              label="To" 
+              value={transaction.nameDest} 
             />
             <Divider sx={{ my: 2 }} />
             <DetailItem 
               icon={<SecurityIcon />} 
               label="Status" 
               value={
-                isFraudulent(transaction.amount) ? (
+                transaction.prediction === 1 ? (
                   <Chip size="small" label="Suspicious" color="error" />
                 ) : (
                   <Chip size="small" label="Normal" color="success" />
                 )
               } 
             />
-            {isFraudulent(transaction.amount) && (
-              <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-                This transaction has been flagged as potentially fraudulent due to its high amount. Please review and verify.
-              </Typography>
-            )}
+            <Typography variant="body2" color={transaction.prediction === 1 ? "error" : "success"} sx={{ mt: 2 }}>
+              Fraud Probability: {(transaction.probability * 100).toFixed(2)}%
+            </Typography>
           </Box>
         )}
       </DialogContent>
