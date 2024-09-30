@@ -56,10 +56,5 @@ def predict():
 
     return jsonify({"error": "Something went wrong"}), 500
 
-@app.route('/api/hello', methods=['GET'])
-def hello():
-    print("Hello World from Flask!")
-    return jsonify({"message": "Hello World from Flask!"})
-
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
