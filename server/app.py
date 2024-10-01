@@ -27,7 +27,6 @@ def predict():
     if file:
         # Read the CSV file
         df = pd.read_csv(io.StringIO(file.stream.read().decode("UTF8")), delimiter=",")
-        print(df.columns)
         df['balanceOrig_change'] = df['newbalanceOrig'] - df['oldbalanceOrg']
         df['balanceDest_change'] = df['newbalanceDest'] - df['oldbalanceDest']
         df['amount_log'] = np.log1p(df['amount'])
@@ -50,8 +49,6 @@ def predict():
                 "probability": float(prob),
                 **df.iloc[i].to_dict() 
             })
-            print(i, pred, prob)
-        print(results[0])
         return jsonify(results)
 
     return jsonify({"error": "Something went wrong"}), 500
