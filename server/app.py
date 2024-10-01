@@ -4,6 +4,7 @@ import joblib
 import pandas as pd
 import numpy as np
 import io
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
@@ -54,4 +55,4 @@ def predict():
     return jsonify({"error": "Something went wrong"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))

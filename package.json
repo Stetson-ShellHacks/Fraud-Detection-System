@@ -1,0 +1,9 @@
+{
+    "name": "fraud-detection-system",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "cd server && gunicorn app:app",
+      "heroku-postbuild": "cd client && npm install && npm run build"
+    },
+    "cacheDirectories": ["client/node_modules"]
+  }
