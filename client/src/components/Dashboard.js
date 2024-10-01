@@ -5,14 +5,12 @@ import { Box, Grid, Typography, Card, CardContent } from '@mui/material'
 import TransactionTable from './TransactionTable'
 import TransactionModal from './TransactionModal'
 import AmountChart from './AmountChart'
-import FraudChart from './FraudChart'  // New import
-import UploadCSV from './UploadCSV'
-
+import FraudChart from './FraudChart' 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
   const [selectedTransaction, setSelectedTransaction] = useState(null)
   const [amountChartData, setAmountChartData] = useState([])
-  const [fraudChartData, setFraudChartData] = useState([])  // New state
+  const [fraudChartData, setFraudChartData] = useState([]) 
 
   useEffect(() => {
     const storedData = localStorage.getItem('transactionData');
