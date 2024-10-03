@@ -1,4 +1,4 @@
-# Fraud Detection Dashboard
+# Fraud Detection System
 
 ## 🚀 Overview
 
