@@ -2,7 +2,7 @@
 
 ## 🚀 Overview
 
-The Fraud Detection Dashboard is a powerful web application developed for the ShellHacks 2024 hackathon. It combines machine learning with interactive data visualization to help identify and analyze potentially fraudulent transactions. This project consists of a React-based frontend for data visualization and a Flask backend for processing and serving predictions.
+The Fraud Detection System is a powerful web application developed for the ShellHacks 2024 hackathon. It combines machine learning with interactive data visualization to help identify and analyze potentially fraudulent transactions. This project consists of a React-based frontend for data visualization and a Flask backend for processing and serving predictions.
 
 ## 🏆 ShellHacks 2024
 
@@ -44,7 +44,7 @@ This project was created as part of ShellHacks 2024, one of Florida's largest ha
 1. Clone the repository:
    ```
    git clone https://github.com/Stetson-ShellHacks/Fraud-Detection-System.git
-   cd fraud-detection-dashboard
+   cd fraud-detection-system
    ```
 
 2. Set up the frontend:
