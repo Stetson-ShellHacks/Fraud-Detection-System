@@ -17,3 +17,4 @@ threadpoolctl==3.5.0
 tzdata==2024.2
 Werkzeug==3.0.4
 gunicorn==23.0.0
+rich==13.7.0
