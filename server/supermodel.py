@@ -70,7 +70,7 @@ def get_preprocessor():
                 ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
                 ('onehot', OneHotEncoder(handle_unknown='ignore'))
             ]), categorical_features)
-        ])
+        ]
     )
     return preprocessor
 
